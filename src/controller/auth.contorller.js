@@ -85,8 +85,66 @@ export const loginUser = async (req) => {
         status: 400,
       });
     }
+
+    // genrate token
+    const token = jwt.sign(
+      { id: existingUser._id, role: existingUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "2d" }
+    );
+
+    // return res
+    return new Response(
+      JSON.stringify({
+        message: "Login successful",
+        user: {
+          id: existingUser._id,
+          username: existingUser.username,
+          email: existingUser.email,
+          role: existingUser.role,
+          token: token,
+        },
+      })
+    );
   } catch (error) {
     console.log("Error in register api", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+};
+
+// change passowrd
+export const changePassword = async (req) => {
+  try {
+    const { email, newPassword } = await req.json();
+
+    if (!email || !newPassword) {
+      return new Response(
+        JSON.stringify({ error: "All fields are required" }),
+        { status: 400 }
+      );
+    }
+
+    // check if user alrday exist or not
+    const user = await User.findOne({ email });
+    if (!user) {
+      return new Response(JSON.stringify({ error: "User Not found" }), {
+        status: 404,
+      });
+    }
+
+    // hash new password
+    const hashedPAssword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPAssword;
+    await user.save();
+
+    return new Response(
+      JSON.stringify({ message: "Password reset successfully!" }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("Error in reset password API", error);
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
     });
