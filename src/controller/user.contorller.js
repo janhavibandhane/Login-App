@@ -91,17 +91,17 @@ export const punchOut = async (req) => {
 export const getPunchRecords = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-    const date = searchParams.get("date");
+    const _id = searchParams.get("_id");
+    // const date = searchParams.get("date");
 
-    if (!userId || !date) {
+    if (!_id ) {
       return new Response(
         JSON.stringify({ error: "All fields are required" }),
         { status: 400 }
       );
     }
 
-    const punches = await Punch.find({ userId, date }).sort({ PunchIntime: 1 });
+    const punches = await Punch.find({ _id }).sort({ PunchIntime: 1 });
 
     if (punches.length === 0) {
       return new Response(
