@@ -150,3 +150,71 @@ export const changePassword = async (req) => {
     });
   }
 };
+
+//get all users
+export const getAllUsers = async () => {
+  try {
+    const users = await User.find().select("-password");
+    //remove password field
+
+    return new Response(
+      JSON.stringify({
+        message: "Users fetched successfully",
+        users,
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error in getAllUsers API:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+};
+// export const getAllUsers = async (req) => {
+//   try {
+//     await connectDB();
+
+//     const { searchParams } = new URL(req.url);
+
+//     const page = parseInt(searchParams.get("page")) || 1;
+//     const limit = parseInt(searchParams.get("limit")) || 10;
+//     const search = searchParams.get("search") || "";
+
+//     const skip = (page - 1) * limit;
+
+//     // Search by username or email
+//     const query = {
+//       $or: [
+//         { username: { $regex: search, $options: "i" } },
+//         { email: { $regex: search, $options: "i" } }
+//       ]
+//     };
+
+//     const totalUsers = await User.countDocuments(query);
+
+//     const users = await User.find(query)
+//       .select("-password")
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ createdAt: -1 });
+
+//     return new Response(
+//       JSON.stringify({
+//         message: "Users fetched successfully",
+//         currentPage: page,
+//         totalPages: Math.ceil(totalUsers / limit),
+//         totalUsers,
+//         users,
+//       }),
+//       { status: 200 }
+//     );
+
+//   } catch (error) {
+//     console.log("Error in getAllUsers API", error);
+//     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+//       status: 500,
+//     });
+//   }
+// };
+

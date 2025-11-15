@@ -92,16 +92,16 @@ export const getPunchRecords = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
     const _id = searchParams.get("_id");
-    // const date = searchParams.get("date");
+    const date = searchParams.get("date");
 
-    if (!_id ) {
+    if (!_id || !date) {
       return new Response(
         JSON.stringify({ error: "All fields are required" }),
         { status: 400 }
       );
     }
 
-    const punches = await Punch.find({ _id }).sort({ PunchIntime: 1 });
+    const punches = await Punch.find({ _id ,date }).sort({ PunchIntime: 1 });
 
     if (punches.length === 0) {
       return new Response(
@@ -120,3 +120,4 @@ export const getPunchRecords = async (req) => {
   }
 };
 
+// report to get all punch records
