@@ -1,4 +1,4 @@
-import { Punch } from "@/model/punch.modle";
+import { Punch } from "../model/punch.modle";
 
 // punch in api
 export const punchIn = async (req) => {

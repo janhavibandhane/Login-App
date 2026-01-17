@@ -1,5 +1,5 @@
-import { getAllUsers } from "@/controller/auth.contorller";
-import { verifyToken } from "@/middlewares/verifyToken";
+import { getAllUsers } from "@/backend/controller/auth.contorller";
+import { verifyToken } from "@/backend/middlewares/verifyToken";
 
 export const GET = verifyToken(async (req) => {
     return await getAllUsers(req);
